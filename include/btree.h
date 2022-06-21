@@ -9,25 +9,40 @@
 #ifndef _BTREE_H_
 #define _BTREE_H_
 
-#include <stack>   // std::stack
+#include <stack>    // std::stack
+#include <fstream>  // std::ofstream
+#include <string>   // std::stoi
 
 struct node {
-    char data = ' ';
-    node *l = NULL;   // Pointer to left child
-    node *r = NULL;  // Pointer to right child
+    std::string data;
+    node *l = nullptr;   // Pointer to left child
+    node *r = nullptr;   // Pointer to right child
+    
+    node(std::string str) {
+        this->data = str;
+        l = nullptr;
+        r = nullptr;
+    }
+    node() {
+        l = nullptr;
+        r = nullptr;
+    }
 };
 
-class binary_tree {
+class Binary_Tree {
     public:
-        node *root;
+        node *root = nullptr;
 
-        binary_tree();
-        //~binary_tree();
+        Binary_Tree();
 
-        void insert( node*, std::stack< node >& );
-
-    private:
-        //std::stack< char > elements;   // Elements of the read expression
+        // Takes operators to create a tree for each and then merges the existing trees into one
+        void insert( node*, std::stack< node* >* );
+        // Creates input prefix format
+        void pre_order( node*, std::ofstream* );
+        // Evaluate the expression
+        int post_order( node *, std::ofstream* );
+        // Creates input inline format
+        void inline_order( node *, std::ofstream* );
 
 };
 

@@ -8,51 +8,59 @@
 
 #include "btree.h"
 
-binary_tree::binary_tree() {
+Binary_Tree::Binary_Tree() {
     root = NULL;
 }
 
-void binary_tree::insert( node *nd, std::stack< node > &elements ){
-    if( root == NULL ){
-        root = nd;
-
-        nd->l = &elements.top();
-        elements.pop();
-
-        nd->r = &elements.top();
-        elements.pop(); 
-        
-        std::cout << "new root " << root->data << std::endl;
-    } else {
-        std::cout << "current root " << root->data << std::endl;
-        
-        nd->l = root;
-        nd->r = &elements.top();
-        elements.pop();
-
-        root = nd;
-    }
-
-
-    /*
-    //std::cout << "func root " << nd.data << std::endl;
-
-    //nd->l = &elements.top();
-    nd->l = root;
-    //std::cout << "func left " << nd.l->data << std::endl;
-    //elements.pop();
+void Binary_Tree::insert( node *nd, std::stack< node* > *elements ){
+    nd->r = elements->top();
+    elements->pop();
  
-    nd->r = &elements.top();
-    //std::cout << "func right " << nd.r->data << std::endl;
-    elements.pop();
+    nd->l = elements->top();
+    elements->pop();
 
     root = nd;
-    //std::cout << "func root 2 " << root->data << std::endl;
-    //std::cout << "func left " << root->l->data << std::endl;
-    //std::cout << "func right " << root->r->data << std::endl;
 
-    //elements.push(*nd);
-    */
+    elements->push(nd);
 }
 
+void Binary_Tree::pre_order(node *nd, std::ofstream *file) {
+    *file << nd->data << " ";
+    if (nd->l != nullptr)
+        pre_order(nd->l, file);
+    if (nd->r != nullptr)
+        pre_order(nd->r, file);
+}
 
+int Binary_Tree::post_order(node *nd, std::ofstream *file) {
+    if ( nd->l == nullptr && nd->r == nullptr )
+        return std::stoi(nd->data);
+
+    int x{}, y{};
+    if (nd->l != nullptr)
+        x = post_order(nd->l, file);
+    if (nd->r != nullptr)
+        y = post_order(nd->r, file);
+
+    int res{};
+    if (nd->data == "+")
+        res = x + y;
+    else if (nd->data == "-")
+        res = x - y;
+    else if (nd->data == "*")
+        res = x * y;
+    else
+        res = x / y;
+
+    return res;
+}
+
+void Binary_Tree::inline_order(node *nd, std::ofstream *file) {
+    if (nd->l != nullptr)
+        inline_order(nd->l, file);
+    
+    *file << nd->data << " ";
+    
+    if (nd->r != nullptr)
+        inline_order(nd->r, file);
+}
